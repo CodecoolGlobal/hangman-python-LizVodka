@@ -20,7 +20,7 @@ def scanning():
                 difficulty_3.append(words[i][j])
     return difficulty_1, difficulty_2, difficulty_3
 
-# STEP 1
+# PART 1
 # display a menu with at least 3 difficulty choices and ask the user
 # to select the desired level
 #difficulty = "1" # sample data, normally the user should choose the difficulty
@@ -41,21 +41,18 @@ def difficulty(difficulty_1, difficulty_2, difficulty_3):
             else:
                 print("Try another number, between 1 and 3")
                 continue
+            print(difficulty)
             return diff
         except ValueError:
             print("That doesn't really look like a level number... Let's try again!")
             continue
-  
 
-def choose(diff):
+def choose_a_word(diff):
     rnd = int(random.randrange(0,len(diff)+1))
     word_to_guess = diff[rnd]
     return word_to_guess
 #word_to_guess = "Cairo" # sample data, normally the word should be chosen from the countries-and-capitals.txt
    
-
-
-
 # STEP 3
 # display the chosen word to guess with all letters replaced by "_"
 # for example instead of "Cairo" display "_ _ _ _ _"
@@ -79,9 +76,9 @@ def kiir(guessed):
 # "quit", "Quit", "QUit", "QUIt", "QUIT", "QuIT"... you get the idea :)
 # HINT: use the upper() or lower() built-in Python functions
 
-def validat(letter):
+def validate_letter(letter):
     if letter.upper() == "QUIT":
-        exit()
+        exit("Quitting...")
     else:
         if letter.upper() in word_to_guess.upper():
             return True
@@ -92,7 +89,7 @@ def validat(letter):
 
 def bekeres(guessed, lives):
     letter = input("Please type a letter! ")
-    if validat(letter):
+    if validate_letter(letter):
         for letters in range(len(word_to_guess)):
             if letter.upper() == word_to_guess[letters].upper():
                 if word_to_guess[letters].isupper():
@@ -108,11 +105,9 @@ def bekeres(guessed, lives):
 
 def is_it_the_end(lives):
     if ''.join(guessed) == word_to_guess:
-        print("You won this time!")
-        exit()
+        exit("You won this time!")
     elif lives == 0:
-        print("You have run out of lives. Good bye!")
-        exit()
+        exit("You have run out of lives. Good bye!")
     else:
         bekeres(guessed, lives)
 
@@ -149,6 +144,6 @@ if __name__ == "__main__":
     lives = 7
     difficulty_1, difficulty_2, difficulty_3 = scanning()
     diff = difficulty(difficulty_1, difficulty_2, difficulty_3)
-    word_to_guess = choose(diff)
+    word_to_guess = choose_a_word(diff)
     guessed = guessed()
     lives = bekeres(guessed, lives)
