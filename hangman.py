@@ -20,7 +20,7 @@ def scanning():
                 difficulty_3.append(words[i][j])
     return difficulty_1, difficulty_2, difficulty_3
 
-# PART 1
+# STEP 1
 # display a menu with at least 3 difficulty choices and ask the user
 # to select the desired level
 #difficulty = "1" # sample data, normally the user should choose the difficulty
