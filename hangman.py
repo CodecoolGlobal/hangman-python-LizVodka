@@ -29,14 +29,23 @@ def scanning():
 # based on the chosen difficulty level, set the values 
 # for the player's lives
 def difficulty(difficulty_1, difficulty_2, difficulty_3):
-    difficulty = int(input("\033[94mPlease select a level! Type 1 for Easy, 2 for Mediate or 3 for Master. \033[0m"))
-    if difficulty == 1:
-        diff = difficulty_1
-    elif difficulty == 2:
-        diff = difficulty_2
-    elif difficulty == 3:
-        diff = difficulty_3
-    return diff
+    while True:
+        try:
+            difficulty = int(input("\033[94mPlease select a level! Type 1 for Easy, 2 for Mediate or 3 for Master. \033[0m"))
+            if difficulty == 1:
+                diff = difficulty_1
+            elif difficulty == 2:
+                diff = difficulty_2
+            elif difficulty == 3:
+                diff = difficulty_3
+            else:
+                print("Try another number, between 1 and 3")
+                continue
+            return diff
+        except ValueError:
+            print("That doesn't really look like a level number... Let's try again!")
+            continue
+  
 
 def choose(diff):
     rnd = int(random.randrange(0,len(diff)+1))
