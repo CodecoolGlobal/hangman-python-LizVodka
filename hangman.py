@@ -4,21 +4,19 @@ import man
 
 def scanning():
     words = []
-    difficulty_1 = []
-    difficulty_2 = []
-    difficulty_3 = []
+    words_sorted_by_difficulty = [[],[],[]]
     with open("countries-and-capitals.txt") as file:
         for line in file:
             words.append(line.rstrip().split(' | '))
     for i in range(len(words)):
         for j in range(2):
             if len(words[i][j]) <= 10:
-                difficulty_1.append(words[i][j])
+                words_sorted_by_difficulty[0].append(words[i][j])
             elif 10 < len(words[i][j]) <= 20:
-                difficulty_2.append(words[i][j])
+                words_sorted_by_difficulty[1].append(words[i][j])
             else:
-                difficulty_3.append(words[i][j])
-    return difficulty_1, difficulty_2, difficulty_3
+                words_sorted_by_difficulty[2].append(words[i][j])
+    return words_sorted_by_difficulty
 
 # PART 1
 # display a menu with at least 3 difficulty choices and ask the user
@@ -28,20 +26,19 @@ def scanning():
 # STEP 2
 # based on the chosen difficulty level, set the values 
 # for the player's lives
-def difficulty(difficulty_1, difficulty_2, difficulty_3):
+def difficulty(words_sorted_by_difficulty):
     while True:
         try:
             difficulty = int(input("\033[94mPlease select a level! Type 1 for Easy, 2 for Mediate or 3 for Master. \033[0m"))
             if difficulty == 1:
-                diff = difficulty_1
+                diff = words_sorted_by_difficulty[0]
             elif difficulty == 2:
-                diff = difficulty_2
+                diff = words_sorted_by_difficulty[1]
             elif difficulty == 3:
-                diff = difficulty_3
+                diff = words_sorted_by_difficulty[2]
             else:
                 print("Try another number, between 1 and 3")
                 continue
-            print(difficulty)
             return diff
         except ValueError:
             print("That doesn't really look like a level number... Let's try again!")
@@ -79,6 +76,12 @@ def kiir(guessed):
 def validate_letter(letter):
     if letter.upper() == "QUIT":
         exit("Quitting...")
+    elif letter.isalpha() == False:
+        print("This didn't look like a letter.")
+        return True
+    elif is_already_tried(letter):
+        print(f"\033[91mYou've already tried this letter {already_tried_letters}\033[0m")
+        return True
     else:
         if letter.upper() in word_to_guess.upper():
             return True
@@ -118,7 +121,13 @@ def is_it_the_end(lives):
 # If it is not, than append to the tried letters
 # If it has already been typed, return to STEP 5. HINT: use a while loop here
 already_tried_letters = [] # this list will contain all the tried letters
-
+def is_already_tried(letter):
+    letter.lower()
+    if letter in already_tried_letters:
+        return True
+    else:
+        already_tried_letters.append(letter)
+        return False
 
 # STEP 6
 # if the letter is present in the word iterate through all the letters in the variable
@@ -142,8 +151,8 @@ already_tried_letters = [] # this list will contain all the tried letters
 if __name__ == "__main__":
     wrongies = []
     lives = 7
-    difficulty_1, difficulty_2, difficulty_3 = scanning()
-    diff = difficulty(difficulty_1, difficulty_2, difficulty_3)
+    words_sorted_by_difficulty = scanning()
+    diff = difficulty(words_sorted_by_difficulty)
     word_to_guess = choose_a_word(diff)
     guessed = guessed()
     lives = bekeres(guessed, lives)
