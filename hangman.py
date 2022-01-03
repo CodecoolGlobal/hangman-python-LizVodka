@@ -2,6 +2,8 @@ import random
 import man
 #from man import HANGMANPICS
 
+#STEP 1: we scan the words from file, then we devide them into 3 lists by their difficulty
+
 def scanning():
     words = []
     words_sorted_by_difficulty = [[],[],[]]
@@ -18,14 +20,9 @@ def scanning():
                 words_sorted_by_difficulty[2].append(words[i][j])
     return words_sorted_by_difficulty
 
-# PART 1
-# display a menu with at least 3 difficulty choices and ask the user
-# to select the desired level
-#difficulty = "1" # sample data, normally the user should choose the difficulty
-
 # STEP 2
-# based on the chosen difficulty level, set the values 
-# for the player's lives
+# ask the user about their chosen difficulty level
+
 def difficulty(words_sorted_by_difficulty):
     while True:
         try:
@@ -44,11 +41,12 @@ def difficulty(words_sorted_by_difficulty):
             print("That doesn't really look like a level number... Let's try again!")
             continue
 
+# based on the chosen difficulty level, set the word to guess
 def choose_a_word(diff):
     rnd = int(random.randrange(0,len(diff)+1))
     word_to_guess = diff[rnd]
     return word_to_guess
-#word_to_guess = "Cairo" # sample data, normally the word should be chosen from the countries-and-capitals.txt
+
    
 # STEP 3
 # display the chosen word to guess with all letters replaced by "_"
@@ -73,13 +71,13 @@ def kiir(guessed):
 # "quit", "Quit", "QUit", "QUIt", "QUIT", "QuIT"... you get the idea :)
 # HINT: use the upper() or lower() built-in Python functions
 
-def validate_letter(letter):
+def validate_letter(already_tried_letters, letter):
     if letter.upper() == "QUIT":
         exit("Quitting...")
     elif letter.isalpha() == False:
         print("This didn't look like a letter.")
         return True
-    elif is_already_tried(letter):
+    elif is_already_tried(already_tried_letters, letter.lower()):
         print(f"\033[91mYou've already tried this letter {already_tried_letters}\033[0m")
         return True
     else:
@@ -90,9 +88,15 @@ def validate_letter(letter):
             print(wrongies)
             return False
 
-def bekeres(guessed, lives):
+# if the letter is not present in the word decrease the value in the lives variable
+# and display a hangman ASCII art. 
+# STEP 5
+# if the letter is present in the word iterate through all the letters in the variable
+# word_to_guess. If that letter is present in the already_tried_letters then display it,
+# otherwise display "_".
+def bekeres(already_tried_letters, guessed, lives):
     letter = input("Please type a letter! ")
-    if validate_letter(letter):
+    if validate_letter(already_tried_letters, letter):
         for letters in range(len(word_to_guess)):
             if letter.upper() == word_to_guess[letters].upper():
                 if word_to_guess[letters].isupper():
@@ -103,25 +107,15 @@ def bekeres(guessed, lives):
     else:
         print('\033[93m' + man.HANGMANPICS[7-lives] + '\033[0m')
         lives -= 1
-    is_it_the_end(lives)
+    is_it_the_end(already_tried_letters, lives)
     return lives
 
-def is_it_the_end(lives):
-    if ''.join(guessed) == word_to_guess:
-        exit("You won this time!")
-    elif lives == 0:
-        exit("You have run out of lives. Good bye!")
-    else:
-        bekeres(guessed, lives)
-
-
-# STEP 5
+# STEP 6
 # validate if the typed letter is already in the tried letters
-# HINT: search on the internet: `python if letter in list`
 # If it is not, than append to the tried letters
 # If it has already been typed, return to STEP 5. HINT: use a while loop here
-already_tried_letters = [] # this list will contain all the tried letters
-def is_already_tried(letter):
+# this list will contain all the tried letters
+def is_already_tried(already_tried_letters, letter):
     letter.lower()
     if letter in already_tried_letters:
         return True
@@ -129,30 +123,21 @@ def is_already_tried(letter):
         already_tried_letters.append(letter)
         return False
 
-# STEP 6
-# if the letter is present in the word iterate through all the letters in the variable
-# word_to_guess. If that letter is present in the already_tried_letters then display it,
-# otherwise display "_".
+def is_it_the_end(already_tried_letters, lives):
+    if ''.join(guessed) == word_to_guess:
+        exit("You won this time!")
+    elif lives == 0:
+        exit("You have run out of lives. Good bye!")
+    else:
+        bekeres(already_tried_letters, guessed, lives)
 
 
-# if the letter is not present in the word decrease the value in the lives variable
-# and display a hangman ASCII art. You can search the Internet for "hangman ASCII art",
-# or draw a new beautiful one on your own.
-
-
-
-# STEP 7
-# check if the variable already_tried_letters already contains all the letters necessary
-# to build the value in the variable word_to_guess. If so display a winning message and exit
-# the app.
-# If you still have letters that are not guessed check if you have a non negative amount of lives
-# left. If not print a loosing message and exit the app.
-# If neither of the 2 conditions mentioned above go back to STEP 4
 if __name__ == "__main__":
     wrongies = []
+    already_tried_letters = []
     lives = 7
     words_sorted_by_difficulty = scanning()
     diff = difficulty(words_sorted_by_difficulty)
     word_to_guess = choose_a_word(diff)
     guessed = guessed()
-    lives = bekeres(guessed, lives)
+    lives = bekeres(already_tried_letters, guessed, lives)
